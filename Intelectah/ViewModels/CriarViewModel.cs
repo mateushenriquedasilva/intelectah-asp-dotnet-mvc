@@ -49,7 +49,6 @@ namespace Intelectah.ViewModels
         public int IdDoExameCadastrado { get; set; }
         [Required]
         public DateTime DataDaConsulta { get; set; }
-        [Required]
         public string NumeroDeProtocolo { get; set; }
     }
 }

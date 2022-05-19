@@ -4,6 +4,7 @@ using Intelectah.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -461,12 +462,16 @@ namespace Intelectah.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(data => data.DataDaConsulta == model.DataDaConsulta);
 
+            //número de protocolo
+            Guid myUUId = Guid.NewGuid();
+            string convertedUUID = myUUId.ToString();
+
             var marcacaodeconsulta = new MarcacaoDeConsulta
             {
                 IdDoPaciente = model.IdDoPaciente,
                 IdDoExameCadastrado = model.IdDoExameCadastrado,
                 DataDaConsulta = model.DataDaConsulta,
-                NumeroDeProtocolo = model.NumeroDeProtocolo
+                NumeroDeProtocolo = convertedUUID
             };
 
             try
