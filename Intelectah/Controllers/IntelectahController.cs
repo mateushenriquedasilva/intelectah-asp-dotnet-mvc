@@ -258,5 +258,145 @@ namespace Intelectah.Controllers
                 return BadRequest();
             }
         }
+
+        //---------- Cadastro de Exames ----------
+        //buscar todos os cadastros
+        [HttpGet]
+        [Route(template: "cadastrodeexames")]
+        public async Task<IActionResult> GetAsyncCadastroDeExames(
+            [FromServices] AppDbContext context)
+        {
+            var cadastrodeexames = await context
+                .CadastroDeExames
+                .AsNoTracking()
+                .ToListAsync();
+
+            return Ok(cadastrodeexames);
+        }
+
+        //buscar cadastros pole id
+        [HttpGet]
+        [Route(template: "cadastrodeexames/{id}")]
+        public async Task<IActionResult> GetByIdAsyncCadastroDeExames(
+            [FromServices] AppDbContext context, [FromRoute] int id)
+        {
+            var cadastrodeexame = await context
+                .CadastroDeExames
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            //verificar se existe o item
+            return cadastrodeexame == null
+                ? NotFound()
+                : Ok(cadastrodeexame);
+        }
+
+        //Criar Cadastro de Exame
+        [HttpPost]
+        [Route(template: "cadastrodeexames")]
+        public async Task<IActionResult> PostAsyncCadastroDeExames(
+            [FromServices] AppDbContext context,
+            [FromBody] CriarCadastroDeExames model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var tipodeexame = await context
+                .TiposDeExame
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == model.IdDoTipoDeExame);
+
+            var cadastrodeexame = new CadastroDeExames
+            {
+                Nome = model.Nome, 
+                Observacoes = model.Observacoes,
+                IdDoTipoDeExame = model.IdDoTipoDeExame
+            };
+
+            try
+            {
+                if(tipodeexame != null)
+                {
+                    await context.CadastroDeExames.AddAsync(cadastrodeexame);
+                    await context.SaveChangesAsync();
+                    return Created(uri: $"v1/tiposdeexame/{cadastrodeexame.Id}", cadastrodeexame);
+                }
+
+                return BadRequest();
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+        }
+
+        //atualizar cadastro de exame
+        [HttpPut]
+        [Route(template: "cadastrodeexames/{id}")]
+        public async Task<IActionResult> PutAsyncCadastroDeExames(
+            [FromServices] AppDbContext context,
+            [FromBody] CadastroDeExames model,
+            [FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var cadastrodeexame = await context
+              .CadastroDeExames
+              .FirstOrDefaultAsync(x => x.Id == id);
+
+            var tipodeexame = await context
+                .TiposDeExame
+                .FirstOrDefaultAsync(x => x.Id == model.IdDoTipoDeExame);
+
+            if (cadastrodeexame == null)
+                return NotFound();
+
+            try
+            {
+                if (tipodeexame != null)
+                {
+                    cadastrodeexame.Nome = model.Nome;
+                    cadastrodeexame.Observacoes = model.Observacoes;
+                    cadastrodeexame.IdDoTipoDeExame = model.IdDoTipoDeExame;
+
+                    context.CadastroDeExames.Update(cadastrodeexame);
+                    await context.SaveChangesAsync();
+                    return Ok(cadastrodeexame);
+                }
+
+                return BadRequest();
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+
+        }
+
+        //apagar cadastro de exame
+        [HttpDelete]
+        [Route(template: "cadastrodeexames/{id}")]
+        public async Task<IActionResult> DeleteAsyncCadastroDeExames(
+            [FromServices] AppDbContext context,
+            [FromRoute] int id)
+        {
+            var cadastrodeexame = await context
+                .CadastroDeExames
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            try
+            {
+                context.CadastroDeExames.Remove(cadastrodeexame);
+                await context.SaveChangesAsync();
+                return Ok("Cadastro de exame apagado com sucesso!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+        }
     }
 }

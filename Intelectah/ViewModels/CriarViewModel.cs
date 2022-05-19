@@ -28,4 +28,15 @@ namespace Intelectah.ViewModels
         [Required]
         public string Descricao { get; set; }
     }
+
+    public class CriarCadastroDeExames
+    {
+        public int Id { get; set; }
+        [Required]
+        public string Nome { get; set; }
+        [Required]
+        public string Observacoes { get; set; }
+        [Required]
+        public int IdDoTipoDeExame { get; set; }
+    }
 }

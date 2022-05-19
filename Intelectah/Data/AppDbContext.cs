@@ -7,8 +7,9 @@ namespace Intelectah.Data
     {
         public DbSet<Paciente> Pacientes { get; set; }
         public DbSet<TiposDeExame> TiposDeExame { get; set; }
+        public DbSet<CadastroDeExames> CadastroDeExames { get; set; }
 
-        // configuração do banco de dados com EF
+        // configuraï¿½ï¿½o do banco de dados com EF
         protected override void OnConfiguring(
             DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlite(connectionString: "DataSource=intelectah.db;Cache=Shared");
