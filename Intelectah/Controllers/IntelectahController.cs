@@ -296,7 +296,7 @@ namespace Intelectah.Controllers
         [Route(template: "cadastrodeexames")]
         public async Task<IActionResult> PostAsyncCadastroDeExames(
             [FromServices] AppDbContext context,
-            [FromBody] CriarCadastroDeExames model)
+            [FromBody] CriarCadastroDeExamesViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -336,7 +336,7 @@ namespace Intelectah.Controllers
         [Route(template: "cadastrodeexames/{id}")]
         public async Task<IActionResult> PutAsyncCadastroDeExames(
             [FromServices] AppDbContext context,
-            [FromBody] CadastroDeExames model,
+            [FromBody] CriarCadastroDeExamesViewModel model,
             [FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -392,6 +392,164 @@ namespace Intelectah.Controllers
                 context.CadastroDeExames.Remove(cadastrodeexame);
                 await context.SaveChangesAsync();
                 return Ok("Cadastro de exame apagado com sucesso!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        //---------- Marcação de Consultas ----------
+        //buscar consultas
+        [HttpGet]
+        [Route(template:"marcacaodeconsultas")]
+        public async Task<IActionResult> GetAsyncMarcacaoDeConsulta(
+            [FromServices] AppDbContext context)
+        {
+            var consultas = await context
+                .MarcacaoDeConsulta
+                .AsNoTracking()
+                .ToListAsync();
+
+            return Ok(consultas);
+        }
+
+        //buscar consultas pelo id
+        [HttpGet]
+        [Route(template: "marcacaodeconsultas/{id}")]
+        public async Task<IActionResult> GetByIdAsyncMarcacaoDeConsulta(
+            [FromServices] AppDbContext context,
+            [FromRoute]int id)
+        {
+            var consulta = await context
+                .MarcacaoDeConsulta
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return consulta == null
+                ? NotFound()
+                : Ok(consulta);
+        }
+
+
+        //criar consulta
+        [HttpPost]
+        [Route(template: "marcacaodeconsultas")]
+        public async Task<IActionResult> PostAsyncMarcacaoDeConsulta(
+            [FromServices] AppDbContext context,
+            [FromBody] CriarMarcacaoDeConsultaViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            //id do paciente
+            var paciente = await context
+                .Pacientes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Cpf == model.IdDoPaciente || p.Nome == model.IdDoPaciente);
+
+            // id do exame cadastrado
+            var exame = await context
+                .CadastroDeExames
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == model.IdDoExameCadastrado);
+
+            var marcacaodeconsulta = new MarcacaoDeConsulta
+            {
+                IdDoPaciente = model.IdDoPaciente,
+                IdDoExameCadastrado = model.IdDoExameCadastrado,
+                DataDaConsulta = model.DataDaConsulta,
+                NumeroDeProtocolo = model.NumeroDeProtocolo
+            };
+
+            try
+            {
+                if(paciente != null && exame != null)
+                {
+                    await context.MarcacaoDeConsulta.AddAsync(marcacaodeconsulta);
+                    await context.SaveChangesAsync();
+                    return Created(uri: $"v1/marcacaodeconsultas/{marcacaodeconsulta.Id}", marcacaodeconsulta);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+        }
+
+        //atualizar marcação de cunsulta
+        [HttpPut]
+        [Route(template: "marcacaodeconsultas/{id}")]
+        public async Task<IActionResult> PutAsyncMarcacaoDeConsulta(
+            [FromServices] AppDbContext context,
+            [FromBody] CriarMarcacaoDeConsultaViewModel model,
+            [FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var marcacaodeconsulta = await context
+                .MarcacaoDeConsulta
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            //id do paciente
+            var paciente = await context
+                .Pacientes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Cpf == model.IdDoPaciente || p.Nome == model.IdDoPaciente);
+
+            // id do exame cadastrado
+            var exame = await context
+                .CadastroDeExames
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == model.IdDoExameCadastrado);
+
+            if (marcacaodeconsulta == null)
+                return NotFound();
+
+            try
+            {
+                if(paciente != null && exame != null){
+                    marcacaodeconsulta.IdDoPaciente = model.IdDoPaciente;
+                    marcacaodeconsulta.IdDoExameCadastrado = model.IdDoExameCadastrado;
+                    marcacaodeconsulta.DataDaConsulta = model.DataDaConsulta;
+                    marcacaodeconsulta.NumeroDeProtocolo = model.NumeroDeProtocolo;
+
+                    context.MarcacaoDeConsulta.Update(marcacaodeconsulta);
+                    await context.SaveChangesAsync();
+                    return Ok(marcacaodeconsulta);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+        }
+
+        //apagar consulta
+        [HttpDelete]
+        [Route(template: "marcacaodeconsultas/{id}")]
+        public async Task<IActionResult> DeleteAsyncMarcacaoDeConsulta(
+            [FromServices] AppDbContext context,
+            [FromRoute] int id)
+        {
+            var consulta = await context
+                .MarcacaoDeConsulta
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (consulta == null)
+                return NotFound();
+
+            try
+            {
+                context.MarcacaoDeConsulta.Remove(consulta);
+                await context.SaveChangesAsync();
+                return Ok("Consulta apagado com sucesso!");
             }
             catch (Exception e)
             {

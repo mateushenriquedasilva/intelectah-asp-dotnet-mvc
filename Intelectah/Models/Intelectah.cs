@@ -27,4 +27,13 @@ namespace Intelectah.Models
         public string Observacoes { get; set; }
         public int IdDoTipoDeExame { get; set; }
     }
+
+    public class MarcacaoDeConsulta
+    {
+        public int Id { get; set; }
+        public string IdDoPaciente { get; set; }
+        public int IdDoExameCadastrado { get; set; }
+        public DateTime DataDaConsulta { get; set; }
+        public string NumeroDeProtocolo { get; set; }
+    }
 }

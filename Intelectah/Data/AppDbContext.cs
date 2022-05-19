@@ -8,6 +8,7 @@ namespace Intelectah.Data
         public DbSet<Paciente> Pacientes { get; set; }
         public DbSet<TiposDeExame> TiposDeExame { get; set; }
         public DbSet<CadastroDeExames> CadastroDeExames { get; set; }
+        public DbSet<MarcacaoDeConsulta> MarcacaoDeConsulta { get; set; }
 
         // configura��o do banco de dados com EF
         protected override void OnConfiguring(

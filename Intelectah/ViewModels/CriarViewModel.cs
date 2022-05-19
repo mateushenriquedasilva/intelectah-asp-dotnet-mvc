@@ -29,7 +29,7 @@ namespace Intelectah.ViewModels
         public string Descricao { get; set; }
     }
 
-    public class CriarCadastroDeExames
+    public class CriarCadastroDeExamesViewModel
     {
         public int Id { get; set; }
         [Required]
@@ -38,5 +38,18 @@ namespace Intelectah.ViewModels
         public string Observacoes { get; set; }
         [Required]
         public int IdDoTipoDeExame { get; set; }
+    }
+
+    public class CriarMarcacaoDeConsultaViewModel
+    {
+        public int Id { get; set; }
+        [Required]
+        public string IdDoPaciente { get; set; }
+        [Required]
+        public int IdDoExameCadastrado { get; set; }
+        [Required]
+        public DateTime DataDaConsulta { get; set; }
+        [Required]
+        public string NumeroDeProtocolo { get; set; }
     }
 }
