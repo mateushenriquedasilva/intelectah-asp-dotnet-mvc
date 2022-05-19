@@ -455,6 +455,12 @@ namespace Intelectah.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == model.IdDoExameCadastrado);
 
+            //data validação
+            var data = await context
+                .MarcacaoDeConsulta
+                .AsNoTracking()
+                .FirstOrDefaultAsync(data => data.DataDaConsulta == model.DataDaConsulta);
+
             var marcacaodeconsulta = new MarcacaoDeConsulta
             {
                 IdDoPaciente = model.IdDoPaciente,
@@ -467,9 +473,14 @@ namespace Intelectah.Controllers
             {
                 if(paciente != null && exame != null)
                 {
-                    await context.MarcacaoDeConsulta.AddAsync(marcacaodeconsulta);
-                    await context.SaveChangesAsync();
-                    return Created(uri: $"v1/marcacaodeconsultas/{marcacaodeconsulta.Id}", marcacaodeconsulta);
+                    //validar data
+                    if (data == null)
+                    {
+                        await context.MarcacaoDeConsulta.AddAsync(marcacaodeconsulta);
+                        await context.SaveChangesAsync();
+                        return Created(uri: $"v1/marcacaodeconsultas/{marcacaodeconsulta.Id}", marcacaodeconsulta);
+                    }
+                    return BadRequest();
                 }
 
                 return BadRequest();
