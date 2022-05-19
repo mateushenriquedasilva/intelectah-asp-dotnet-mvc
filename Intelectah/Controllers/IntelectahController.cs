@@ -76,5 +76,66 @@ namespace Intelectah.Controllers
                 return BadRequest();
             }
         }
+
+        //atualizar paciente
+        [HttpPut]
+        [Route(template: "paciente/{id}")]
+        public async Task<IActionResult> PutAsync(
+            [FromServices] AppDbContext context,
+            [FromBody] CriarPacienteViewModel model,
+            [FromRoute]int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var paciente = await context
+                .Pacientes
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (paciente == null)
+                return NotFound();
+
+            try
+            {
+                paciente.Nome = model.Nome;
+                paciente.Cpf = model.Cpf;
+                paciente.DataDeNascimento = model.DataDeNascimento;
+                paciente.Sexo = model.Sexo;
+                paciente.Telefone = model.Telefone;
+                paciente.Email = model.Email;
+
+                context.Pacientes.Update(paciente);
+                await context.SaveChangesAsync();
+                return Ok(paciente);
+
+            } 
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+        }
+
+        //apagar paciente
+        [HttpDelete]
+        [Route(template: "paciente/{id}")]
+        public async Task<IActionResult> DeleteAsync(
+            [FromServices] AppDbContext context,
+            [FromRoute]int id)
+        {
+            var paciente = await context
+                .Pacientes
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            try
+            {
+                context.Pacientes.Remove(paciente);
+                await context.SaveChangesAsync();
+                return Ok("Paciente apagado com sucesso!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+        }
     }
 }
