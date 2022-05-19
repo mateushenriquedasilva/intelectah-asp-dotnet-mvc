@@ -19,4 +19,13 @@ namespace Intelectah.ViewModels
         [Required]
         public string Email { get; set; }
     }
+
+    public class CriarTiposDeExameViewModel
+    {
+        public int Id { get; set; }
+        [Required]
+        public string NomeDoTipoDeExame { get; set; }
+        [Required]
+        public string Descricao { get; set; }
+    }
 }

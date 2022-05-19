@@ -12,4 +12,11 @@ namespace Intelectah.Models
         public string Telefone { get; set; }
         public string Email { get; set; }
     }
+
+    public class TiposDeExame
+    { 
+        public int Id { get; set; }
+        public string NomeDoTipoDeExame { get; set; }
+        public string Descricao { get; set; }
+    }
 }

@@ -3,14 +3,16 @@ using System;
 using Intelectah.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Intelectah.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220519145736_AddTableTiposdeExame")]
+    partial class AddTableTiposdeExame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +49,7 @@ namespace Intelectah.Migrations
 
             modelBuilder.Entity("Intelectah.Models.TiposDeExame", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -57,7 +59,7 @@ namespace Intelectah.Migrations
                     b.Property<string>("NomeDoTipoDeExame")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("TiposDeExame");
                 });
